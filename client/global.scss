@@ -1,10 +1,15 @@
 @use "@carbon/react";
 @use "@carbon/react/scss/theme" as *;
+@use "@carbon/react/scss/spacing" as *;
 
 body {
   margin: 0;
   background-color: $background;
   color: $text-primary;
+}
+
+.page {
+  padding: $spacing-07 0;
 }
 
 .forecast-placeholder {

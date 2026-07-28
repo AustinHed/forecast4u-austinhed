@@ -23,6 +23,10 @@ export default defineConfig(({ mode }) => ({
       "@shared": path.resolve(__dirname, "./shared"),
     },
   },
+  test: {
+    environment: "jsdom",
+    setupFiles: ["./client/setupTests.ts"],
+  },
 }));
 
 function expressPlugin(): Plugin {
