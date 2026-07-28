@@ -18,8 +18,8 @@ const NotFound = () => {
 
   return (
     <AppShell>
-      <Grid narrow className="page">
-        <Column sm={4} md={8} lg={8}>
+      <Grid narrow className="page not-found">
+        <Column sm={4} md={8} lg={16}>
           <Section level={1}>
             <Stack gap={5}>
               <Heading>Page not found</Heading>

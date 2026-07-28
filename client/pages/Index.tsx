@@ -9,7 +9,7 @@ export default function Index() {
   return (
     <AppShell>
       <Grid narrow className="page">
-        <Column sm={4} md={8} lg={8}>
+        <Column sm={4} md={8} lg={16}>
           <Stack gap={7}>
             <Section level={1}>
               <Heading>Forecast4U</Heading>

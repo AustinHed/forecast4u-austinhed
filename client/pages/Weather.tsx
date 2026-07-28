@@ -103,56 +103,65 @@ export default function Weather() {
     setRetryToken((token) => token + 1);
   }
 
+  const searchAnotherLocation = (
+    <Section>
+      <Stack gap={5}>
+        <Heading>Search another location</Heading>
+        <ZipSearchForm initialZip={rawZip ?? ""} />
+      </Stack>
+    </Section>
+  );
+
   return (
     <AppShell>
       <Grid narrow className="page">
-        <Column sm={4} md={8} lg={8}>
-          <Stack gap={7}>
-            <Section level={1}>
-              <Stack gap={5}>
-                <Heading ref={headingRef} tabIndex={-1}>
-                  {getHeadingText(state)}
-                </Heading>
+        <Column sm={4} md={8} lg={16}>
+          <Section level={1}>
+            <Stack gap={5}>
+              <Heading ref={headingRef} tabIndex={-1}>
+                {getHeadingText(state)}
+              </Heading>
 
-                {!normalizedZip && (
-                  <InlineNotification
-                    kind="error"
-                    title="Invalid ZIP code"
-                    subtitle={`"${rawZip}" isn't a valid 5-digit US ZIP code.`}
-                    lowContrast
-                    hideCloseButton
-                  />
-                )}
+              {state?.status === "success" ? (
+                <ForecastResult forecast={state.forecast}>{searchAnotherLocation}</ForecastResult>
+              ) : (
+                <Stack gap={5}>
+                  {searchAnotherLocation}
 
-                {normalizedZip && normalizedZip === rawZip && state?.status === "loading" && (
-                  <div role="status">
-                    <Loading small withOverlay={false} description="Loading forecast" />
-                    <p>Loading the forecast for {normalizedZip}…</p>
-                  </div>
-                )}
-
-                {normalizedZip && normalizedZip === rawZip && state?.status === "error" && (
-                  <Stack gap={5}>
+                  {!normalizedZip && (
                     <InlineNotification
                       kind="error"
-                      hideCloseButton
+                      title="Invalid ZIP code"
+                      subtitle={`"${rawZip}" isn't a valid 5-digit US ZIP code.`}
                       lowContrast
-                      {...describeError(state.kind, normalizedZip)}
+                      hideCloseButton
                     />
-                    <Button kind="tertiary" onClick={handleRetry}>
-                      Try again
-                    </Button>
-                  </Stack>
-                )}
+                  )}
 
-                {normalizedZip && normalizedZip === rawZip && state?.status === "success" && (
-                  <ForecastResult forecast={state.forecast} />
-                )}
-              </Stack>
-            </Section>
+                  {normalizedZip && normalizedZip === rawZip && state?.status === "loading" && (
+                    <div role="status">
+                      <Loading small withOverlay={false} description="Loading forecast" />
+                      <p>Loading the forecast for {normalizedZip}…</p>
+                    </div>
+                  )}
 
-            <ZipSearchForm initialZip={rawZip ?? ""} />
-          </Stack>
+                  {normalizedZip && normalizedZip === rawZip && state?.status === "error" && (
+                    <Stack gap={5}>
+                      <InlineNotification
+                        kind="error"
+                        hideCloseButton
+                        lowContrast
+                        {...describeError(state.kind, normalizedZip)}
+                      />
+                      <Button kind="tertiary" onClick={handleRetry}>
+                        Try again
+                      </Button>
+                    </Stack>
+                  )}
+                </Stack>
+              )}
+            </Stack>
+          </Section>
         </Column>
       </Grid>
     </AppShell>

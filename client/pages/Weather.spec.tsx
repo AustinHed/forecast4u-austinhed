@@ -88,7 +88,7 @@ describe("Weather page", () => {
     expect(heading).toBeInTheDocument();
     expect(screen.getByText(/california/i)).toBeInTheDocument();
     expect(screen.getByText(/zip 90210/i)).toBeInTheDocument();
-    expect(screen.getByRole("heading", { level: 2, name: /^day 1/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^day 1/i })).toBeInTheDocument();
     expect(screen.getByText(/open-meteo/i)).toBeInTheDocument();
   });
 

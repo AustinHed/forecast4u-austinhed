@@ -31,34 +31,40 @@ function buildForecast(periodCount: number): WeatherForecast {
   };
 }
 
-function renderResult(forecast: WeatherForecast) {
+function renderResult(forecast: WeatherForecast, children?: React.ReactNode) {
   return render(
     <Section level={1}>
       <Heading>{forecast.location.name}</Heading>
-      <ForecastResult forecast={forecast} />
+      <ForecastResult forecast={forecast}>{children}</ForecastResult>
     </Section>,
   );
 }
 
 describe("ForecastResult", () => {
-  it("renders the state, ZIP, timezone, and three-hour forecast metadata, plus five day groups and attribution", () => {
+  it("renders the state, ZIP, timezone, and three-hour forecast metadata, plus five collapsed day accordion items and attribution", () => {
     renderResult(buildForecast(40));
 
     expect(screen.getByText(/california/i)).toBeInTheDocument();
     expect(screen.getByText(/zip 90210/i)).toBeInTheDocument();
     expect(screen.getByText(/america\/los_angeles/i)).toBeInTheDocument();
     expect(screen.getByText(/three-hour forecast/i)).toBeInTheDocument();
-    expect(screen.getAllByRole("heading", { level: 2, name: /^day \d/i })).toHaveLength(5);
+
+    const dayToggles = screen.getAllByRole("button", { name: /^day \d/i });
+    expect(dayToggles).toHaveLength(5);
+    dayToggles.forEach((toggle) => {
+      expect(toggle).toHaveAttribute("aria-expanded", "false");
+    });
+
     expect(screen.getByRole("link", { name: /open-meteo/i })).toHaveAttribute(
       "href",
       "https://open-meteo.com/",
     );
   });
 
-  it("renders fewer day groups when partial data is returned", () => {
+  it("renders fewer day accordion items when partial data is returned", () => {
     renderResult(buildForecast(10));
 
-    expect(screen.getAllByRole("heading", { level: 2, name: /^day \d/i })).toHaveLength(2);
+    expect(screen.getAllByRole("button", { name: /^day \d/i })).toHaveLength(2);
   });
 
   it("shows an empty-data message when no periods are available", () => {
@@ -67,5 +73,11 @@ describe("ForecastResult", () => {
     expect(
       screen.getByText(/no forecast data is available for this location/i),
     ).toBeInTheDocument();
+  });
+
+  it("renders provided children between the metadata and the day accordion", () => {
+    renderResult(buildForecast(10), <p data-testid="search-slot">search form</p>);
+
+    expect(screen.getByTestId("search-slot")).toBeInTheDocument();
   });
 });

@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
-import { Heading, Section } from "@carbon/react";
+import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { Accordion } from "@carbon/react";
 import ForecastDayGroup from "./ForecastDayGroup";
 import type { ForecastDayGroup as ForecastDayGroupData } from "@/lib/forecastGrouping";
 import type { ForecastPeriod } from "@/lib/weather";
@@ -23,40 +24,54 @@ const group: ForecastDayGroupData = {
   periods: [buildPeriod("12:00"), buildPeriod("15:00")],
 };
 
-function renderWithPageHeading() {
+function renderInAccordion() {
   return render(
-    <Section level={1}>
-      <Heading>Beverly Hills</Heading>
+    <Accordion>
       <ForecastDayGroup group={group} />
-    </Section>,
+    </Accordion>,
   );
 }
 
 describe("ForecastDayGroup", () => {
-  it("renders the day range as a heading nested below the page heading", () => {
-    renderWithPageHeading();
+  it("renders the day range label in the accordion item's toggle button", () => {
+    renderInAccordion();
 
     expect(
-      screen.getByRole("heading", {
-        level: 2,
+      screen.getByRole("button", {
         name: "Day 1 \u00b7 Tue, Jul 28, 12 PM\u2013Wed, Jul 29, 9 AM",
       }),
     ).toBeInTheDocument();
   });
 
-  it("renders every period within the group as a list item", () => {
-    renderWithPageHeading();
+  it("starts collapsed and expands independently when its toggle is clicked", async () => {
+    renderInAccordion();
 
-    expect(screen.getAllByRole("listitem")).toHaveLength(2);
+    const user = userEvent.setup();
+    const toggle = screen.getByRole("button", { name: /^day 1/i });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+
+    await user.click(toggle);
+
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
   });
 
-  it("exposes the period row as a keyboard-focusable, labelled scroll region", () => {
-    renderWithPageHeading();
+  it("renders every period within the group as a list item", () => {
+    renderInAccordion();
 
     const periodList = screen.getByRole("list", {
       name: /three-hour forecast periods for day 1/i,
     });
 
-    expect(periodList).toHaveAttribute("tabIndex", "0");
+    expect(within(periodList).getAllByRole("listitem")).toHaveLength(2);
+  });
+
+  it("labels the periods list for assistive technology without a scroll region", () => {
+    renderInAccordion();
+
+    const periodList = screen.getByRole("list", {
+      name: /three-hour forecast periods for day 1/i,
+    });
+
+    expect(periodList).not.toHaveAttribute("tabIndex");
   });
 });

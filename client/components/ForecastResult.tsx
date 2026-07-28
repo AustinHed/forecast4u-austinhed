@@ -1,13 +1,15 @@
-import { Link, Stack } from "@carbon/react";
+import type { ReactNode } from "react";
+import { Accordion, Link, Stack } from "@carbon/react";
 import ForecastDayGroup from "./ForecastDayGroup";
 import { groupForecastIntoDays } from "@/lib/forecastGrouping";
 import type { WeatherForecast } from "@/lib/weather";
 
 export interface ForecastResultProps {
   forecast: WeatherForecast;
+  children?: ReactNode;
 }
 
-export default function ForecastResult({ forecast }: ForecastResultProps) {
+export default function ForecastResult({ forecast, children }: ForecastResultProps) {
   const dayGroups = groupForecastIntoDays(forecast.periods);
 
   return (
@@ -17,14 +19,16 @@ export default function ForecastResult({ forecast }: ForecastResultProps) {
         ZIP {forecast.location.zip} · {forecast.timezone} time · Three-hour forecast
       </p>
 
+      {children}
+
       {dayGroups.length === 0 ? (
         <p role="status">No forecast data is available for this location right now.</p>
       ) : (
-        <div className="forecast-result__days">
+        <Accordion className="forecast-result__accordion">
           {dayGroups.map((group) => (
             <ForecastDayGroup key={group.dayNumber} group={group} />
           ))}
-        </div>
+        </Accordion>
       )}
 
       <p className="forecast-result__attribution">

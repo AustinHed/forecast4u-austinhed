@@ -8,10 +8,21 @@ body {
   margin: 0;
   background-color: $background;
   color: $text-primary;
+  overflow-x: hidden;
 }
 
 .page {
+  max-width: 90rem;
+  margin-inline: auto;
   padding: $spacing-07 0;
+}
+
+.not-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 3rem);
+  text-align: center;
 }
 
 .visually-hidden {
@@ -23,33 +34,18 @@ body {
   color: $text-secondary;
 }
 
-.forecast-result__days {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-06;
-  min-width: 0;
+.forecast-result__accordion {
+  width: 100%;
 }
 
-.forecast-day {
+.forecast-day__periods {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: $spacing-04;
+  margin: 0;
+  padding: 0;
+  list-style: none;
   min-width: 0;
-  padding: $spacing-05;
-  background-color: $layer;
-  border: 1px solid $border-subtle;
-
-  &__heading {
-    margin-bottom: $spacing-04;
-  }
-
-  &__periods {
-    display: grid;
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(9rem, 1fr);
-    gap: $spacing-04;
-    overflow-x: auto;
-    padding: 0 0 $spacing-03;
-    margin: 0;
-    list-style: none;
-  }
 }
 
 .forecast-period {
