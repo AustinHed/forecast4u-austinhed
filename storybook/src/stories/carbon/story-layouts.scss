@@ -1,0 +1,59 @@
+@use '@carbon/react/scss/spacing' as spacing;
+
+.story-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: spacing.$spacing-05;
+}
+
+.story-stack {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$spacing-05;
+  max-width: 20rem;
+}
+
+.weather-summary-tile {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$spacing-03;
+  max-width: 16rem;
+}
+
+.weather-summary-tile__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.weather-summary-tile__temperature {
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.weather-summary-tile__details {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$spacing-02;
+}
+
+.weather-summary-tile__detail-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.forecast-accordion {
+  max-width: 24rem;
+}
+
+.forecast-day {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$spacing-03;
+}
+
+.forecast-day__slot {
+  display: flex;
+  justify-content: space-between;
+}
