@@ -1,0 +1,65 @@
+@use '@carbon/react/scss/spacing' as spacing;
+@use '@carbon/react/scss/theme' as theme;
+
+.weather-alert-card {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$spacing-03;
+  max-width: 24rem;
+  border-inline-start: 0.25rem solid theme.$border-subtle;
+}
+
+.weather-alert-card--advisory {
+  border-inline-start-color: theme.$support-info;
+}
+
+.weather-alert-card--watch {
+  border-inline-start-color: theme.$support-warning;
+}
+
+.weather-alert-card--warning {
+  border-inline-start-color: theme.$support-error;
+}
+
+.weather-alert-card__header {
+  display: flex;
+  align-items: center;
+  gap: spacing.$spacing-03;
+}
+
+.weather-alert-card__icon {
+  flex-shrink: 0;
+}
+
+.weather-alert-card--advisory .weather-alert-card__icon {
+  fill: theme.$support-info;
+}
+
+.weather-alert-card--watch .weather-alert-card__icon {
+  fill: theme.$support-warning;
+}
+
+.weather-alert-card--warning .weather-alert-card__icon {
+  fill: theme.$support-error;
+}
+
+.weather-alert-card__title {
+  margin: 0;
+}
+
+.weather-alert-card__description {
+  margin: 0;
+}
+
+.weather-alert-card__effective-period {
+  margin: 0;
+  color: theme.$text-secondary;
+}
+
+.weather-alert-card__effective-period-label {
+  font-weight: 600;
+}
+
+.weather-alert-card__action {
+  align-self: flex-start;
+}
