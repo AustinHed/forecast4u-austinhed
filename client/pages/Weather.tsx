@@ -109,44 +109,46 @@ export default function Weather() {
         <Column sm={4} md={8} lg={8}>
           <Stack gap={7}>
             <Section level={1}>
-              <Heading ref={headingRef} tabIndex={-1}>
-                {getHeadingText(state)}
-              </Heading>
+              <Stack gap={5}>
+                <Heading ref={headingRef} tabIndex={-1}>
+                  {getHeadingText(state)}
+                </Heading>
 
-              {!normalizedZip && (
-                <InlineNotification
-                  kind="error"
-                  title="Invalid ZIP code"
-                  subtitle={`"${rawZip}" isn't a valid 5-digit US ZIP code.`}
-                  lowContrast
-                  hideCloseButton
-                />
-              )}
-
-              {normalizedZip && normalizedZip === rawZip && state?.status === "loading" && (
-                <div role="status">
-                  <Loading small withOverlay={false} description="Loading forecast" />
-                  <p>Loading the forecast for {normalizedZip}…</p>
-                </div>
-              )}
-
-              {normalizedZip && normalizedZip === rawZip && state?.status === "error" && (
-                <Stack gap={5}>
+                {!normalizedZip && (
                   <InlineNotification
                     kind="error"
-                    hideCloseButton
+                    title="Invalid ZIP code"
+                    subtitle={`"${rawZip}" isn't a valid 5-digit US ZIP code.`}
                     lowContrast
-                    {...describeError(state.kind, normalizedZip)}
+                    hideCloseButton
                   />
-                  <Button kind="tertiary" onClick={handleRetry}>
-                    Try again
-                  </Button>
-                </Stack>
-              )}
+                )}
 
-              {normalizedZip && normalizedZip === rawZip && state?.status === "success" && (
-                <ForecastResult forecast={state.forecast} />
-              )}
+                {normalizedZip && normalizedZip === rawZip && state?.status === "loading" && (
+                  <div role="status">
+                    <Loading small withOverlay={false} description="Loading forecast" />
+                    <p>Loading the forecast for {normalizedZip}…</p>
+                  </div>
+                )}
+
+                {normalizedZip && normalizedZip === rawZip && state?.status === "error" && (
+                  <Stack gap={5}>
+                    <InlineNotification
+                      kind="error"
+                      hideCloseButton
+                      lowContrast
+                      {...describeError(state.kind, normalizedZip)}
+                    />
+                    <Button kind="tertiary" onClick={handleRetry}>
+                      Try again
+                    </Button>
+                  </Stack>
+                )}
+
+                {normalizedZip && normalizedZip === rawZip && state?.status === "success" && (
+                  <ForecastResult forecast={state.forecast} />
+                )}
+              </Stack>
             </Section>
 
             <ZipSearchForm initialZip={rawZip ?? ""} />
