@@ -2,6 +2,7 @@ import type { Decorator, Preview } from "@storybook/react-vite";
 import { useEffect } from "react";
 import { Theme } from "@carbon/react";
 import "../src/styles/carbon.scss";
+import "@carbon/charts-react/styles.css";
 
 type CarbonThemeName = "white" | "g10" | "g90" | "g100";
 
