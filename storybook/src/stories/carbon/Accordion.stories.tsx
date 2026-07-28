@@ -1,23 +1,14 @@
+import type { ComponentProps } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Accordion, AccordionItem } from "@carbon/react";
 import "./story-layouts.scss";
 
-const meta = {
-  title: "Carbon/Disclosure/Accordion",
-  component: Accordion,
-  tags: ["autodocs"],
-  parameters: {
-    docs: {
-      description: {
-        component:
-          "Progressively discloses a set of related sections, such as each day in a five-day forecast, without showing every detail at once.",
-      },
-    },
-  },
-} satisfies Meta<typeof Accordion>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+type AccordionStoryArgs = Omit<ComponentProps<typeof Accordion>, "children"> & {
+  firstItemOpen: boolean;
+  firstItemTitle: string;
+  secondItemTitle: string;
+  thirdItemTitle: string;
+};
 
 const forecastDay = () => (
   <div className="forecast-day">
@@ -40,14 +31,51 @@ const forecastDay = () => (
   </div>
 );
 
-export const CollapsedGroup: Story = {
-  render: () => (
-    <Accordion className="forecast-accordion">
-      <AccordionItem title="Monday">{forecastDay()}</AccordionItem>
-      <AccordionItem title="Tuesday">{forecastDay()}</AccordionItem>
-      <AccordionItem title="Wednesday">{forecastDay()}</AccordionItem>
+const meta = {
+  title: "Carbon/Disclosure/Accordion",
+  component: Accordion,
+  tags: ["autodocs"],
+  parameters: {
+    docs: {
+      description: {
+        component:
+          "Progressively discloses a set of related sections, such as each day in a five-day forecast, without showing every detail at once.",
+      },
+    },
+  },
+  argTypes: {
+    firstItemOpen: { control: "boolean" },
+    firstItemTitle: { control: "text" },
+    secondItemTitle: { control: "text" },
+    thirdItemTitle: { control: "text" },
+  },
+  args: {
+    firstItemOpen: false,
+    firstItemTitle: "Monday",
+    secondItemTitle: "Tuesday",
+    thirdItemTitle: "Wednesday",
+  },
+  render: (args) => (
+    // AccordionItem's `open` prop only sets the initial state, so the group is
+    // remounted (via `key`) whenever `firstItemOpen` changes so the control
+    // takes effect immediately instead of being ignored on update.
+    <Accordion className="forecast-accordion" key={String(args.firstItemOpen)}>
+      <AccordionItem title={args.firstItemTitle} open={args.firstItemOpen}>
+        {forecastDay()}
+      </AccordionItem>
+      <AccordionItem title={args.secondItemTitle}>{forecastDay()}</AccordionItem>
+      <AccordionItem title={args.thirdItemTitle}>{forecastDay()}</AccordionItem>
     </Accordion>
   ),
+} satisfies Meta<AccordionStoryArgs>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const CollapsedGroup: Story = {
+  args: {
+    firstItemOpen: false,
+  },
   parameters: {
     docs: {
       description: {
@@ -59,15 +87,9 @@ export const CollapsedGroup: Story = {
 };
 
 export const OpenByDefault: Story = {
-  render: () => (
-    <Accordion className="forecast-accordion">
-      <AccordionItem title="Monday" open>
-        {forecastDay()}
-      </AccordionItem>
-      <AccordionItem title="Tuesday">{forecastDay()}</AccordionItem>
-      <AccordionItem title="Wednesday">{forecastDay()}</AccordionItem>
-    </Accordion>
-  ),
+  args: {
+    firstItemOpen: true,
+  },
   parameters: {
     docs: {
       description: {
