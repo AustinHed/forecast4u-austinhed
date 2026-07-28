@@ -39,15 +39,15 @@ describe("formatLocalTime", () => {
 });
 
 describe("formatDayRangeLabel", () => {
-  it("includes both dates when the range spans two calendar days", () => {
-    expect(formatDayRangeLabel(1, "2026-07-28T12:00", "2026-07-29T09:00")).toBe(
-      "Day 1 \u00b7 Tue, Jul 28, 12 PM\u2013Wed, Jul 29, 9 AM",
+  it("formats a partial first day as the date and its remaining time range", () => {
+    expect(formatDayRangeLabel(1, "2026-07-28T18:00", "2026-07-28T21:00")).toBe(
+      "Day 1 \u00b7 Tue, Jul 28 \u00b7 6 PM\u20139 PM",
     );
   });
 
-  it("avoids repeating the date when the range stays on the same calendar day", () => {
-    expect(formatDayRangeLabel(2, "2026-07-28T00:00", "2026-07-28T21:00")).toBe(
-      "Day 2 \u00b7 Tue, Jul 28, 12 AM\u20139 PM",
+  it("formats a full day as the date and its full time range", () => {
+    expect(formatDayRangeLabel(2, "2026-07-29T00:00", "2026-07-29T21:00")).toBe(
+      "Day 2 \u00b7 Wed, Jul 29 \u00b7 12 AM\u20139 PM",
     );
   });
 });

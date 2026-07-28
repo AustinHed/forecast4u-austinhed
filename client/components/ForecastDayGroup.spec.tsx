@@ -19,8 +19,9 @@ function buildPeriod(hour: string): ForecastPeriod {
 
 const group: ForecastDayGroupData = {
   dayNumber: 1,
+  dateKey: "2026-07-28",
   firstTimestamp: "2026-07-28T12:00",
-  lastTimestamp: "2026-07-29T09:00",
+  lastTimestamp: "2026-07-28T15:00",
   periods: [buildPeriod("12:00"), buildPeriod("15:00")],
 };
 
@@ -38,7 +39,7 @@ describe("ForecastDayGroup", () => {
 
     expect(
       screen.getByRole("button", {
-        name: "Day 1 \u00b7 Tue, Jul 28, 12 PM\u2013Wed, Jul 29, 9 AM",
+        name: "Day 1 \u00b7 Tue, Jul 28 \u00b7 12 PM\u20133 PM",
       }),
     ).toBeInTheDocument();
   });

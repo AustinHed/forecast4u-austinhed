@@ -33,6 +33,15 @@ function toUtcAnchor(parts: LocalDateTimeParts): Date {
   return new Date(Date.UTC(parts.year, parts.month - 1, parts.day, parts.hour, parts.minute));
 }
 
+/**
+ * Derives a YYYY-MM-DD key from the location-local timestamp digits, so
+ * grouping never depends on the viewer's browser timezone.
+ */
+export function getLocalDateKey(timestamp: string): string {
+  const { year, month, day } = parseLocalTimestamp(timestamp);
+  return `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   weekday: "short",
   month: "short",
@@ -54,24 +63,14 @@ export function formatLocalTime(timestamp: string): string {
   return timeFormatter.format(toUtcAnchor(parseLocalTimestamp(timestamp)));
 }
 
-function isSameDate(a: LocalDateTimeParts, b: LocalDateTimeParts): boolean {
-  return a.year === b.year && a.month === b.month && a.day === b.day;
-}
-
 export function formatDayRangeLabel(
   dayNumber: number,
   firstTimestamp: string,
   lastTimestamp: string,
 ): string {
-  const firstParts = parseLocalTimestamp(firstTimestamp);
-  const lastParts = parseLocalTimestamp(lastTimestamp);
-  const firstDate = formatLocalDate(firstTimestamp);
-  const firstTime = formatLocalTime(firstTimestamp);
-  const lastTime = formatLocalTime(lastTimestamp);
+  const date = formatLocalDate(firstTimestamp);
+  const startTime = formatLocalTime(firstTimestamp);
+  const endTime = formatLocalTime(lastTimestamp);
 
-  const range = isSameDate(firstParts, lastParts)
-    ? `${firstDate}, ${firstTime}\u2013${lastTime}`
-    : `${firstDate}, ${firstTime}\u2013${formatLocalDate(lastTimestamp)}, ${lastTime}`;
-
-  return `Day ${dayNumber} \u00b7 ${range}`;
+  return `Day ${dayNumber} \u00b7 ${date} \u00b7 ${startTime}\u2013${endTime}`;
 }

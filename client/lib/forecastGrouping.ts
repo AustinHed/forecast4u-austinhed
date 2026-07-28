@@ -1,39 +1,48 @@
 import type { ForecastPeriod } from "./weather";
+import { getLocalDateKey } from "./forecastTime";
 
-export const PERIODS_PER_DAY = 8;
 export const DAY_GROUP_COUNT = 5;
 
 export interface ForecastDayGroup {
   dayNumber: number;
+  dateKey: string;
   firstTimestamp: string;
   lastTimestamp: string;
   periods: ForecastPeriod[];
 }
 
 /**
- * Splits the rolling 120-hour, 3-hour-increment forecast into five
- * consecutive 24-hour groups of eight periods each. Stops early (rather than
- * producing a partial or undefined-filled group) when fewer periods than
- * expected are available.
+ * Groups forecast periods by their location-local calendar date, showing
+ * only the first five distinct dates. The first group may be partial when
+ * the forecast begins after midnight on its date; later groups follow the
+ * next calendar-date boundary rather than a fixed period count.
  */
 export function groupForecastIntoDays(periods: ForecastPeriod[]): ForecastDayGroup[] {
-  const relevantPeriods = periods.slice(0, PERIODS_PER_DAY * DAY_GROUP_COUNT);
   const groups: ForecastDayGroup[] = [];
+  const groupIndexByDateKey = new Map<string, number>();
 
-  for (let dayIndex = 0; dayIndex < DAY_GROUP_COUNT; dayIndex++) {
-    const start = dayIndex * PERIODS_PER_DAY;
-    const dayPeriods = relevantPeriods.slice(start, start + PERIODS_PER_DAY);
+  for (const period of periods) {
+    const dateKey = getLocalDateKey(period.timestamp);
+    let groupIndex = groupIndexByDateKey.get(dateKey);
 
-    if (dayPeriods.length === 0) {
-      break;
+    if (groupIndex === undefined) {
+      if (groups.length >= DAY_GROUP_COUNT) {
+        break;
+      }
+      groupIndex = groups.length;
+      groupIndexByDateKey.set(dateKey, groupIndex);
+      groups.push({
+        dayNumber: groupIndex + 1,
+        dateKey,
+        firstTimestamp: period.timestamp,
+        lastTimestamp: period.timestamp,
+        periods: [],
+      });
     }
 
-    groups.push({
-      dayNumber: dayIndex + 1,
-      firstTimestamp: dayPeriods[0].timestamp,
-      lastTimestamp: dayPeriods[dayPeriods.length - 1].timestamp,
-      periods: dayPeriods,
-    });
+    const group = groups[groupIndex];
+    group.periods.push(period);
+    group.lastTimestamp = period.timestamp;
   }
 
   return groups;
