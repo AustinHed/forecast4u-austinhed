@@ -27,7 +27,7 @@ client/                   # React SPA
 ├── components/           # Reusable application components
 ├── lib/                  # Utilities, API clients, and data transformations
 ├── App.tsx               # Application routes and React entry point
-└── global.css            # Global and design-system style entry point
+└── global.scss           # Global and design-system style entry point
 
 server/                   # Express server
 ├── index.ts              # Server setup and route registration

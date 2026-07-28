@@ -1,0 +1,19 @@
+@use "@carbon/react";
+@use "@carbon/react/scss/theme" as *;
+
+body {
+  margin: 0;
+  background-color: $background;
+  color: $text-primary;
+}
+
+.forecast-placeholder {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__column {
+    text-align: center;
+  }
+}
