@@ -1,3 +1,4 @@
+import { Heading, Section } from "@carbon/react";
 import ForecastPeriodItem from "./ForecastPeriodItem";
 import type { ForecastDayGroup as ForecastDayGroupData } from "@/lib/forecastGrouping";
 import { formatDayRangeLabel } from "@/lib/forecastTime";
@@ -7,18 +8,20 @@ export interface ForecastDayGroupProps {
 }
 
 export default function ForecastDayGroup({ group }: ForecastDayGroupProps) {
-  const headingId = `forecast-day-${group.dayNumber}-heading`;
+  const label = formatDayRangeLabel(group.dayNumber, group.firstTimestamp, group.lastTimestamp);
 
   return (
-    <section className="forecast-day" aria-labelledby={headingId}>
-      <h3 id={headingId} className="forecast-day__heading">
-        {formatDayRangeLabel(group.dayNumber, group.firstTimestamp, group.lastTimestamp)}
-      </h3>
-      <ul className="forecast-day__periods">
+    <Section className="forecast-day">
+      <Heading className="forecast-day__heading">{label}</Heading>
+      <ul
+        className="forecast-day__periods"
+        tabIndex={0}
+        aria-label={`Three-hour forecast periods for ${label}`}
+      >
         {group.periods.map((period) => (
           <ForecastPeriodItem key={period.timestamp} period={period} />
         ))}
       </ul>
-    </section>
+    </Section>
   );
 }

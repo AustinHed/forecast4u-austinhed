@@ -79,15 +79,26 @@ describe("Weather page", () => {
     expect(screen.getByText(/loading the forecast for 90210/i)).toBeInTheDocument();
   });
 
-  it("shows the detailed forecast on success", async () => {
+  it("shows the detailed forecast on success, with the location name as the primary heading", async () => {
     mockedGetWeatherForZip.mockResolvedValue(forecast);
 
     renderWeather("90210");
 
-    expect(await screen.findByText(/beverly hills, california/i)).toBeInTheDocument();
-    expect(screen.getByText(/\(90210\)/)).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /^day 1/i })).toBeInTheDocument();
+    const heading = await screen.findByRole("heading", { level: 1, name: "Beverly Hills" });
+    expect(heading).toBeInTheDocument();
+    expect(screen.getByText(/california/i)).toBeInTheDocument();
+    expect(screen.getByText(/zip 90210/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 2, name: /^day 1/i })).toBeInTheDocument();
     expect(screen.getByText(/open-meteo/i)).toBeInTheDocument();
+  });
+
+  it("moves focus to the location heading once a new forecast successfully loads", async () => {
+    mockedGetWeatherForZip.mockResolvedValue(forecast);
+
+    renderWeather("90210");
+
+    const heading = await screen.findByRole("heading", { level: 1, name: "Beverly Hills" });
+    await waitFor(() => expect(heading).toHaveFocus());
   });
 
   it("shows a not-found message for a not_found error", async () => {
@@ -117,7 +128,9 @@ describe("Weather page", () => {
 
     await user.click(screen.getByRole("button", { name: /try again/i }));
 
-    expect(await screen.findByText(/beverly hills, california/i)).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { level: 1, name: "Beverly Hills" }),
+    ).toBeInTheDocument();
     expect(mockedGetWeatherForZip).toHaveBeenCalledTimes(2);
   });
 

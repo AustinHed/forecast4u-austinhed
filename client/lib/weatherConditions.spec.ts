@@ -20,13 +20,15 @@ describe("getWeatherCondition", () => {
     expect(getWeatherCondition(code).label).toBe(label);
   });
 
-  it("provides an icon alongside the accessible label for every mapped code", () => {
+  it("provides a Carbon icon component alongside the accessible label for every mapped code", () => {
     const condition = getWeatherCondition(0);
-    expect(condition.icon).toBeTruthy();
+    expect(condition.Icon).toBeTruthy();
     expect(condition.label).toBeTruthy();
   });
 
   it("falls back to an unknown condition for an unmapped code", () => {
-    expect(getWeatherCondition(-1).label).toBe("Unknown conditions");
+    const condition = getWeatherCondition(-1);
+    expect(condition.label).toBe("Unknown conditions");
+    expect(condition.Icon).toBeTruthy();
   });
 });

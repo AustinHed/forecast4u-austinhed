@@ -1,6 +1,8 @@
 @use "@carbon/react";
 @use "@carbon/react/scss/theme" as *;
 @use "@carbon/react/scss/spacing" as *;
+@use "@carbon/react/scss/type" as *;
+@use "@carbon/react/scss/utilities/visually-hidden" as *;
 
 body {
   margin: 0;
@@ -12,51 +14,46 @@ body {
   padding: $spacing-07 0;
 }
 
-.forecast-placeholder {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &__column {
-    text-align: center;
-  }
+.visually-hidden {
+  @include visually-hidden;
 }
 
-.forecast-result {
-  &__timezone {
-    color: $text-secondary;
-  }
-
-  &__attribution {
-    color: $text-secondary;
-  }
+.forecast-result__metadata,
+.forecast-result__attribution {
+  color: $text-secondary;
 }
 
 .forecast-result__days {
   display: flex;
   flex-direction: column;
-  gap: $spacing-07;
+  gap: $spacing-06;
+  min-width: 0;
 }
 
 .forecast-day {
+  min-width: 0;
+  padding: $spacing-05;
+  background-color: $layer;
+  border: 1px solid $border-subtle;
+
   &__heading {
     margin-bottom: $spacing-04;
   }
 
   &__periods {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(9rem, 1fr);
     gap: $spacing-04;
+    overflow-x: auto;
+    padding: 0 0 $spacing-03;
     margin: 0;
-    padding: 0;
     list-style: none;
   }
 }
 
 .forecast-period {
-  flex: 1 1 9rem;
-  min-width: 9rem;
+  min-width: 0;
 
   &__tile {
     height: 100%;
@@ -66,21 +63,24 @@ body {
     font-weight: 600;
   }
 
+  &__temp {
+    @include type-style("heading-04");
+    margin: $spacing-02 0;
+  }
+
   &__condition {
+    display: flex;
+    align-items: center;
+    gap: $spacing-02;
     margin-bottom: $spacing-03;
+    color: $text-secondary;
   }
 
   &__icon {
-    margin-right: $spacing-02;
+    flex-shrink: 0;
   }
 
   &__detail {
     color: $text-secondary;
-  }
-}
-
-@media (max-width: 42rem) {
-  .forecast-period {
-    flex: 1 1 100%;
   }
 }

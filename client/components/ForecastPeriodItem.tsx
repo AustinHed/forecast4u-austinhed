@@ -9,18 +9,17 @@ export interface ForecastPeriodItemProps {
 
 export default function ForecastPeriodItem({ period }: ForecastPeriodItemProps) {
   const condition = getWeatherCondition(period.weatherCode);
+  const { Icon } = condition;
 
   return (
     <li className="forecast-period">
       <Tile className="forecast-period__tile">
         <p className="forecast-period__time">{formatLocalTime(period.timestamp)}</p>
+        <p className="forecast-period__temp">{Math.round(period.temperatureF)}°F</p>
         <p className="forecast-period__condition">
-          <span aria-hidden="true" className="forecast-period__icon">
-            {condition.icon}
-          </span>
+          <Icon aria-hidden="true" className="forecast-period__icon" size={20} />
           {condition.label}
         </p>
-        <p className="forecast-period__temp">{Math.round(period.temperatureF)}°F</p>
         <p className="forecast-period__detail">
           Feels like {Math.round(period.apparentTemperatureF)}°F
         </p>

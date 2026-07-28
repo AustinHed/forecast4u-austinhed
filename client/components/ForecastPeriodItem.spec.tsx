@@ -28,7 +28,7 @@ describe("ForecastPeriodItem", () => {
     expect(screen.getByText(/8 mph wind/i)).toBeInTheDocument();
   });
 
-  it("hides the decorative icon from assistive technology", () => {
+  it("hides the decorative condition icon from assistive technology", () => {
     const { container } = render(
       <ul>
         <ForecastPeriodItem period={period} />

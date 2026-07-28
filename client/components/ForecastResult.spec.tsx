@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { Heading, Section } from "@carbon/react";
 import ForecastResult from "./ForecastResult";
 import type { WeatherForecast } from "@/lib/weather";
 
@@ -30,14 +31,24 @@ function buildForecast(periodCount: number): WeatherForecast {
   };
 }
 
-describe("ForecastResult", () => {
-  it("renders the location, ZIP, timezone note, five day groups, and attribution", () => {
-    render(<ForecastResult forecast={buildForecast(40)} />);
+function renderResult(forecast: WeatherForecast) {
+  return render(
+    <Section level={1}>
+      <Heading>{forecast.location.name}</Heading>
+      <ForecastResult forecast={forecast} />
+    </Section>,
+  );
+}
 
-    expect(screen.getByText(/beverly hills, california/i)).toBeInTheDocument();
-    expect(screen.getByText(/\(90210\)/)).toBeInTheDocument();
+describe("ForecastResult", () => {
+  it("renders the state, ZIP, timezone, and three-hour forecast metadata, plus five day groups and attribution", () => {
+    renderResult(buildForecast(40));
+
+    expect(screen.getByText(/california/i)).toBeInTheDocument();
+    expect(screen.getByText(/zip 90210/i)).toBeInTheDocument();
     expect(screen.getByText(/america\/los_angeles/i)).toBeInTheDocument();
-    expect(screen.getAllByRole("heading", { name: /^day \d/i })).toHaveLength(5);
+    expect(screen.getByText(/three-hour forecast/i)).toBeInTheDocument();
+    expect(screen.getAllByRole("heading", { level: 2, name: /^day \d/i })).toHaveLength(5);
     expect(screen.getByRole("link", { name: /open-meteo/i })).toHaveAttribute(
       "href",
       "https://open-meteo.com/",
@@ -45,13 +56,13 @@ describe("ForecastResult", () => {
   });
 
   it("renders fewer day groups when partial data is returned", () => {
-    render(<ForecastResult forecast={buildForecast(10)} />);
+    renderResult(buildForecast(10));
 
-    expect(screen.getAllByRole("heading", { name: /^day \d/i })).toHaveLength(2);
+    expect(screen.getAllByRole("heading", { level: 2, name: /^day \d/i })).toHaveLength(2);
   });
 
   it("shows an empty-data message when no periods are available", () => {
-    render(<ForecastResult forecast={buildForecast(0)} />);
+    renderResult(buildForecast(0));
 
     expect(
       screen.getByText(/no forecast data is available for this location/i),

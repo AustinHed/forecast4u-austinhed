@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Button,
@@ -10,9 +10,11 @@ import {
   Section,
   Stack,
 } from "@carbon/react";
+import AppShell from "@/components/AppShell";
 import ZipSearchForm from "@/components/ZipSearchForm";
 import ForecastResult from "@/components/ForecastResult";
 import { normalizeZip } from "@/lib/zip";
+import { useDocumentTitle } from "@/lib/useDocumentTitle";
 import {
   getWeatherForZip,
   WeatherError,
@@ -38,12 +40,26 @@ function describeError(kind: WeatherErrorKind, zip: string) {
   };
 }
 
+function getHeadingText(state: RequestState | null): string {
+  return state?.status === "success" ? state.forecast.location.name : "Weather forecast";
+}
+
+function getDocumentTitle(state: RequestState | null): string {
+  const heading = getHeadingText(state);
+  return heading === "Weather forecast"
+    ? "Weather forecast \u2013 Forecast4U"
+    : `${heading} weather forecast \u2013 Forecast4U`;
+}
+
 export default function Weather() {
   const { zip: rawZip } = useParams<{ zip: string }>();
   const navigate = useNavigate();
   const normalizedZip = rawZip ? normalizeZip(rawZip) : null;
   const [state, setState] = useState<RequestState | null>(null);
   const [retryToken, setRetryToken] = useState(0);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+
+  useDocumentTitle(getDocumentTitle(state));
 
   useEffect(() => {
     if (normalizedZip && rawZip && normalizedZip !== rawZip) {
@@ -77,58 +93,66 @@ export default function Weather() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [normalizedZip, rawZip, retryToken]);
 
+  useEffect(() => {
+    if (state?.status === "success") {
+      headingRef.current?.focus();
+    }
+  }, [state]);
+
   function handleRetry() {
     setRetryToken((token) => token + 1);
   }
 
   return (
-    <main className="page">
-      <Grid narrow>
+    <AppShell>
+      <Grid narrow className="page">
         <Column sm={4} md={8} lg={8}>
           <Stack gap={7}>
             <Section level={1}>
-              <Heading>Forecast4U</Heading>
-            </Section>
+              <Heading ref={headingRef} tabIndex={-1}>
+                {getHeadingText(state)}
+              </Heading>
 
-            {!normalizedZip && (
-              <InlineNotification
-                kind="error"
-                title="Invalid ZIP code"
-                subtitle={`"${rawZip}" isn't a valid 5-digit US ZIP code.`}
-                lowContrast
-                hideCloseButton
-              />
-            )}
-
-            {normalizedZip && normalizedZip === rawZip && state?.status === "loading" && (
-              <div role="status">
-                <Loading small withOverlay={false} description="Loading forecast" />
-                <p>Loading the forecast for {normalizedZip}…</p>
-              </div>
-            )}
-
-            {normalizedZip && normalizedZip === rawZip && state?.status === "error" && (
-              <Stack gap={5}>
+              {!normalizedZip && (
                 <InlineNotification
                   kind="error"
-                  hideCloseButton
+                  title="Invalid ZIP code"
+                  subtitle={`"${rawZip}" isn't a valid 5-digit US ZIP code.`}
                   lowContrast
-                  {...describeError(state.kind, normalizedZip)}
+                  hideCloseButton
                 />
-                <Button kind="tertiary" onClick={handleRetry}>
-                  Try again
-                </Button>
-              </Stack>
-            )}
+              )}
 
-            {normalizedZip && normalizedZip === rawZip && state?.status === "success" && (
-              <ForecastResult forecast={state.forecast} />
-            )}
+              {normalizedZip && normalizedZip === rawZip && state?.status === "loading" && (
+                <div role="status">
+                  <Loading small withOverlay={false} description="Loading forecast" />
+                  <p>Loading the forecast for {normalizedZip}…</p>
+                </div>
+              )}
+
+              {normalizedZip && normalizedZip === rawZip && state?.status === "error" && (
+                <Stack gap={5}>
+                  <InlineNotification
+                    kind="error"
+                    hideCloseButton
+                    lowContrast
+                    {...describeError(state.kind, normalizedZip)}
+                  />
+                  <Button kind="tertiary" onClick={handleRetry}>
+                    Try again
+                  </Button>
+                </Stack>
+              )}
+
+              {normalizedZip && normalizedZip === rawZip && state?.status === "success" && (
+                <ForecastResult forecast={state.forecast} />
+              )}
+            </Section>
 
             <ZipSearchForm initialZip={rawZip ?? ""} />
           </Stack>
         </Column>
       </Grid>
-    </main>
+    </AppShell>
   );
 }
