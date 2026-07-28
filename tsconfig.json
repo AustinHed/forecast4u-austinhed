@@ -25,17 +25,9 @@
 
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./client/*"],
-      "@shared/*": ["./shared/*"]
+      "@/*": ["./client/*"]
     }
   },
-  "include": [
-    "client/**/*",
-    "server/**/*",
-    "shared/**/*",
-    "scripts/**/*.ts",
-    "vite.config.ts",
-    "vite.config.server.ts"
-  ],
+  "include": ["client/**/*", "vite.config.ts"],
   "exclude": ["node_modules", "dist"]
 }
