@@ -1,0 +1,11 @@
+Follow all requirements in ./AGENTS.md. Treat them as mandatory and
+project-wide.
+
+For every behavioral code change, automatically add or update relevant unit
+tests even when the user does not request tests. Run the affected tests and
+type-check the project before declaring the change complete.
+
+Use IBM Carbon as the project's only UI design system. Do not add or use
+Tailwind, shadcn/ui, Radix UI, Lucide, or another competing UI library.
+
+Use pnpm for package management and project commands.

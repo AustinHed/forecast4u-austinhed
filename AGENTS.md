@@ -1,164 +1,145 @@
-# Fusion Starter
+# Forecast4U Agent Instructions
 
-A production-ready full-stack React application template with integrated Express server, featuring React Router 6 SPA mode, TypeScript, Vitest, Zod and modern tooling.
+## Project objective
 
-While the starter comes with a express server, only create endpoint when strictly neccesary, for example to encapsulate logic that must leave in the server, such as private keys handling, or certain DB operations, db...
+Forecast4U is a proof-of-value weather application built with React, TypeScript, and Vite. It displays five days of forecast data in three-hour increments at `/weather/:zip`.
 
-## Tech Stack
+Keep the implementation focused, maintainable, accessible, and suitable for a technical demonstration.
 
-- **PNPM**: Prefer pnpm
-- **Frontend**: React 18 + React Router 6 (spa) + TypeScript + Vite + TailwindCSS 3
-- **Backend**: Express server integrated with Vite dev server
-- **Testing**: Vitest
-- **UI**: Radix UI + TailwindCSS 3 + Lucide React icons
+## Existing architecture
 
-## Project Structure
+This repository uses Builder's full-stack Fusion starter:
 
-```
-client/                   # React SPA frontend
-├── pages/                # Route components (Index.tsx = home)
-├── components/ui/        # Pre-built UI component library
-├── App.tsx                # App entry point and with SPA routing setup
-└── global.css            # TailwindCSS 3 theming and global styles
+- Frontend: React 18, React Router 6, TypeScript, and Vite
+- Backend: Express integrated with the Vite development server
+- Validation: Zod where runtime validation is appropriate
+- Testing: Vitest
+- Package manager: pnpm
+- Development port: 8080
 
-server/                   # Express API backend
-├── index.ts              # Main server setup (express config + routes)
-└── routes/               # API handlers
+Use the dependency versions already declared in `package.json`. Do not upgrade frameworks or replace the existing architecture unless explicitly requested.
 
-shared/                   # Types used by both client & server
-└── api.ts                # Example of how to share api interfaces
-```
+## Project structure
 
-## Key Features
+```text
+client/                   # React SPA
+├── pages/                # Route-level components
+├── components/           # Reusable application components
+├── lib/                  # Utilities, API clients, and data transformations
+├── App.tsx               # Application routes and React entry point
+└── global.css            # Global and design-system style entry point
 
-## SPA Routing System
+server/                   # Express server
+├── index.ts              # Server setup and route registration
+└── routes/               # Server-side API handlers
 
-The routing system is powered by React Router 6:
-
-- `client/pages/Index.tsx` represents the home page.
-- Routes are defined in `client/App.tsx` using the `react-router-dom` import
-- Route files are located in the `client/pages/` directory
-
-For example, routes can be defined with:
-
-```typescript
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-<Routes>
-  <Route path="/" element={<Index />} />
-  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-  <Route path="*" element={<NotFound />} />
-</Routes>;
+shared/                   # Types shared between client and server
 ```
 
-### Styling System
+Existing aliases:
 
-- **Primary**: TailwindCSS 3 utility classes
-- **Theme and design tokens**: Configure in `client/global.css` 
-- **UI components**: Pre-built library in `client/components/ui/`
-- **Utility**: `cn()` function combines `clsx` + `tailwind-merge` for conditional classes
+- `@/*` maps to `client/*`
+- `@shared/*` maps to `shared/*`
 
-```typescript
-// cn utility usage
-className={cn(
-  "base-classes",
-  { "conditional-class": condition },
-  props.className  // User overrides
-)}
-```
+Preserve this structure unless a change provides a clear architectural benefit.
 
-### Express Server Integration
+## Routing
 
-- **Development**: Single port (8080) for both frontend/backend
-- **Hot reload**: Both client and server code
-- **API endpoints**: Prefixed with `/api/`
+- Use React Router for application routing.
+- Define routes in `client/App.tsx`.
+- Put route-level components in `client/pages/`.
+- Add all application routes before the catch-all `*` route.
+- The required forecast route is `/weather/:zip`.
+- Direct navigation and browser refreshes must work for `/weather/:zip`.
 
-#### Example API Routes
-- `GET /api/ping` - Simple ping api
-- `GET /api/demo` - Demo endpoint  
+## Server usage
 
-### Shared Types
-Import consistent types in both client and server:
-```typescript
-import { DemoResponse } from '@shared/api';
-```
+The starter includes an Express server, but do not create server endpoints unless server-side execution is genuinely necessary.
 
-Path aliases:
-- `@shared/*` - Shared folder
-- `@/*` - Client folder
+Appropriate reasons include:
 
-## Development Commands
+- Protecting private API keys or credentials
+- Performing operations that must not run in the browser
+- Encapsulating server-only business logic
+
+Server API endpoints must:
+
+- Live under `server/routes/`
+- Use the `/api/` prefix
+- Define shared request or response types in `shared/` when useful
+- Validate untrusted inputs at the server boundary
+
+Do not add an Express endpoint merely to proxy a public API that can be called safely from the browser.
+
+## Package management
+
+- Use pnpm for all dependency and script commands.
+- Do not create npm or Yarn lockfiles.
+- Do not add dependencies unless they are necessary.
+- Do not replace existing packages without explaining why.
+
+## Design system
+
+- Use IBM Carbon as the application's only UI design system.
+- Use approved Carbon React components, icons, styles, and design tokens.
+- Do not add or use Tailwind CSS, shadcn/ui, Radix UI, Lucide, Material UI, Chakra UI, Bootstrap, or another competing UI library.
+- Do not recreate a component already available through Carbon.
+- Avoid hard-coded color, typography, and spacing values when an appropriate Carbon token exists.
+- Keep custom CSS limited to application-specific layout or behavior that Carbon does not provide.
+- Until Carbon is installed and indexed, do not introduce a new visual component library.
+
+## Application organization
+
+- Use React functional components and TypeScript.
+- Put reusable application components in `client/components/`.
+- Put reusable utilities in `client/lib/`.
+- Keep API access, forecast transformation, and UI rendering separated.
+- Keep components small and focused.
+- Use shared types rather than duplicating compatible client/server types.
+- Keep external-service details out of presentation components.
+
+## Testing requirements
+
+- For every code change that adds or modifies behavior, automatically add or update relevant unit tests even when the user does not request tests.
+- Use Vitest and React Testing Library.
+- Mock external ZIP-code and weather API requests. Unit tests must not depend on live services.
+- Test success, loading, invalid-input, empty, and failure behavior when those states apply.
+- Run relevant tests after every behavioral change.
+- Do not consider a behavioral task complete until its tests pass.
+- Fix test and type errors introduced by a change.
+
+Documentation-only and formatting-only changes do not require new tests.
+
+## Security and environment variables
+
+- Never commit real secrets.
+- Values exposed through `VITE_*` variables are public browser values and must not be treated as secrets.
+- Put private credentials behind the Express server if private credentials become necessary.
+- Document required environment variables in `.env.example`.
+
+## Development commands
 
 ```bash
-pnpm dev        # Start dev server (client + server)
-pnpm build      # Production build
-pnpm start      # Start production server
-pnpm typecheck  # TypeScript validation
-pnpm test          # Run Vitest tests
+pnpm install       # Install dependencies
+pnpm dev           # Start client and server on port 8080
+pnpm test          # Run Vitest
+pnpm typecheck     # Run TypeScript validation
+pnpm build         # Create the production build
+pnpm start         # Run the production server
 ```
 
-## Adding Features
+After behavioral changes, run at minimum:
 
-### Add new colors to the theme
+1. `pnpm test`
+2. `pnpm typecheck`
 
-Open `client/global.css` and `tailwind.config.ts` and add new tailwind colors.
+Run `pnpm build` after changes to routing, dependencies, configuration, server behavior, or deployment behavior.
 
-### New API Route
-1. **Optional**: Create a shared interface in `shared/api.ts`:
-```typescript
-export interface MyRouteResponse {
-  message: string;
-  // Add other response properties here
-}
-```
+## Change quality
 
-2. Create a new route handler in `server/routes/my-route.ts`:
-```typescript
-import { RequestHandler } from "express";
-import { MyRouteResponse } from "@shared/api"; // Optional: for type safety
-
-export const handleMyRoute: RequestHandler = (req, res) => {
-  const response: MyRouteResponse = {
-    message: 'Hello from my endpoint!'
-  };
-  res.json(response);
-};
-```
-
-3. Register the route in `server/index.ts`:
-```typescript
-import { handleMyRoute } from "./routes/my-route";
-
-// Add to the createServer function:
-app.get("/api/my-endpoint", handleMyRoute);
-```
-
-4. Use in React components with type safety:
-```typescript
-import { MyRouteResponse } from '@shared/api'; // Optional: for type safety
-
-const response = await fetch('/api/my-endpoint');
-const data: MyRouteResponse = await response.json();
-```
-
-### New Page Route
-1. Create component in `client/pages/MyPage.tsx`
-2. Add route in `client/App.tsx`:
-```typescript
-<Route path="/my-page" element={<MyPage />} />
-```
-
-## Production Deployment
-
-- **Standard**: `pnpm build`
-- **Binary**: Self-contained executables (Linux, macOS, Windows)
-- **Cloud Deployment**: Use either Netlify or Vercel via their MCP integrations for easy deployment. Both providers work well with this starter template.
-
-## Architecture Notes
-
-- Single-port development with Vite + Express integration
-- TypeScript throughout (client, server, shared)
-- Full hot reload for rapid development
-- Production-ready with multiple deployment options
-- Comprehensive UI component library included
-- Type-safe API communication via shared interfaces
+- Prefer small, focused changes.
+- Preserve existing behavior unless the task explicitly changes it.
+- Do not edit unrelated files.
+- Explain significant architectural decisions.
+- Do not claim a command passed unless it was actually run.
+- Do not ignore failing tests, type errors, or build failures.
