@@ -1,0 +1,32 @@
+---
+description: Mandatory automatic unit testing for behavioral code changes
+globs:
+alwaysApply: true
+---
+
+# Mandatory automatic testing
+
+For every change that creates or modifies application behavior:
+
+- Add or update relevant unit tests automatically, even when the user's prompt
+  does not mention tests.
+- A new exported utility in `client/lib/` must have a corresponding colocated
+  `*.spec.ts` file.
+- A new React component with behavior must have a corresponding
+  `*.spec.tsx` file.
+- Tests must exercise the behavior added by the current task. Existing
+  unrelated tests do not satisfy this requirement.
+- Use Vitest for utilities and React Testing Library for React components.
+- Never use live network services in unit tests.
+- Run `pnpm test` and `pnpm typecheck` after the implementation.
+- Do not report the task as complete if required tests are missing or either
+  command fails.
+
+Example:
+
+- `client/lib/zip.ts` requires `client/lib/zip.spec.ts`.
+- `client/components/ForecastCard.tsx` requires
+  `client/components/ForecastCard.spec.tsx`.
+
+Documentation-only, comment-only, and formatting-only changes do not require
+new tests.
