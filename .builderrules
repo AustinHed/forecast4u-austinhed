@@ -9,3 +9,8 @@ Use IBM Carbon as the project's only UI design system. Do not add or use
 Tailwind, shadcn/ui, Radix UI, Lucide, or another competing UI library.
 
 Use pnpm for package management and project commands.
+
+Use Carbon icons from @carbon/react/icons for semantic interface imagery.
+Do not use emoji, Unicode pictograms, custom inline SVG, CSS-drawn icons, or
+icons from another library when an appropriate Carbon icon exists. Icons that
+duplicate adjacent text should be hidden from assistive technology.
