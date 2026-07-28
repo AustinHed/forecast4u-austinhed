@@ -9,7 +9,9 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "test-storybook": "vitest --project=storybook",
+    "test": "vitest run --project=storybook"
   },
   "dependencies": {
     "@carbon/react": "^1.112.0",
@@ -34,6 +36,7 @@
     "sass": "^1.102.0",
     "storybook": "^10.5.5",
     "typescript": "~6.0.2",
-    "vite": "^8.1.1"
+    "vite": "^8.1.1",
+    "vitest": "^4.1.10"
   }
 }
