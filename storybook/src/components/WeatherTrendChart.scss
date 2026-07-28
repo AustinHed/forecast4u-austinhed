@@ -1,0 +1,40 @@
+@use '@carbon/react/scss/spacing' as spacing;
+@use '@carbon/react/scss/theme' as theme;
+
+.weather-trend-chart {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$spacing-05;
+  width: 100%;
+  max-width: 100%;
+}
+
+.weather-trend-chart__header {
+  display: flex;
+  flex-direction: column;
+  gap: spacing.$spacing-02;
+}
+
+.weather-trend-chart__title {
+  margin: 0;
+}
+
+.weather-trend-chart__subtitle {
+  margin: 0;
+  color: theme.$text-secondary;
+}
+
+.weather-trend-chart__switcher {
+  align-self: flex-start;
+  max-width: 100%;
+}
+
+.weather-trend-chart__body {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.weather-trend-chart__empty-state {
+  max-width: none;
+}
