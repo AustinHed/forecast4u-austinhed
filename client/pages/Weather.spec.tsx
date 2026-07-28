@@ -79,15 +79,15 @@ describe("Weather page", () => {
     expect(screen.getByText(/loading the forecast for 90210/i)).toBeInTheDocument();
   });
 
-  it("shows a location summary on success", async () => {
+  it("shows the detailed forecast on success", async () => {
     mockedGetWeatherForZip.mockResolvedValue(forecast);
 
     renderWeather("90210");
 
     expect(await screen.findByText(/beverly hills, california/i)).toBeInTheDocument();
     expect(screen.getByText(/\(90210\)/)).toBeInTheDocument();
-    expect(screen.getByText(/forecast loaded successfully/i)).toBeInTheDocument();
-    expect(screen.getByText(/2 three-hour periods returned/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /^day 1/i })).toBeInTheDocument();
+    expect(screen.getByText(/open-meteo/i)).toBeInTheDocument();
   });
 
   it("shows a not-found message for a not_found error", async () => {
@@ -117,7 +117,7 @@ describe("Weather page", () => {
 
     await user.click(screen.getByRole("button", { name: /try again/i }));
 
-    expect(await screen.findByText(/forecast loaded successfully/i)).toBeInTheDocument();
+    expect(await screen.findByText(/beverly hills, california/i)).toBeInTheDocument();
     expect(mockedGetWeatherForZip).toHaveBeenCalledTimes(2);
   });
 

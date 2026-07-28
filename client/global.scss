@@ -22,3 +22,65 @@ body {
     text-align: center;
   }
 }
+
+.forecast-result {
+  &__timezone {
+    color: $text-secondary;
+  }
+
+  &__attribution {
+    color: $text-secondary;
+  }
+}
+
+.forecast-result__days {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-07;
+}
+
+.forecast-day {
+  &__heading {
+    margin-bottom: $spacing-04;
+  }
+
+  &__periods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-04;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}
+
+.forecast-period {
+  flex: 1 1 9rem;
+  min-width: 9rem;
+
+  &__tile {
+    height: 100%;
+  }
+
+  &__time {
+    font-weight: 600;
+  }
+
+  &__condition {
+    margin-bottom: $spacing-03;
+  }
+
+  &__icon {
+    margin-right: $spacing-02;
+  }
+
+  &__detail {
+    color: $text-secondary;
+  }
+}
+
+@media (max-width: 42rem) {
+  .forecast-period {
+    flex: 1 1 100%;
+  }
+}

@@ -9,9 +9,9 @@ import {
   Loading,
   Section,
   Stack,
-  Tile,
 } from "@carbon/react";
 import ZipSearchForm from "@/components/ZipSearchForm";
+import ForecastResult from "@/components/ForecastResult";
 import { normalizeZip } from "@/lib/zip";
 import {
   getWeatherForZip,
@@ -122,21 +122,7 @@ export default function Weather() {
             )}
 
             {normalizedZip && normalizedZip === rawZip && state?.status === "success" && (
-              <Tile>
-                <Stack gap={3}>
-                  <p>
-                    <strong>
-                      {state.forecast.location.name}
-                      {state.forecast.location.state
-                        ? `, ${state.forecast.location.state}`
-                        : ""}
-                    </strong>{" "}
-                    ({state.forecast.location.zip})
-                  </p>
-                  <p>Forecast loaded successfully.</p>
-                  <p>{state.forecast.periods.length} three-hour periods returned.</p>
-                </Stack>
-              </Tile>
+              <ForecastResult forecast={state.forecast} />
             )}
 
             <ZipSearchForm initialZip={rawZip ?? ""} />
