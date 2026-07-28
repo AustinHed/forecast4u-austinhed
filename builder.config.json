@@ -3,5 +3,10 @@
     "buildCommand": "pnpm run build",
     "buildOutputDir": "dist/spa",
     "nodeVersion": "22"
+  },
+  "repoIndexingConfig": {
+    "designSystems": [
+      "@carbon/react"
+    ]
   }
 }
