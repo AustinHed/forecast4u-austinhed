@@ -7,7 +7,7 @@ type CarbonThemeName = "white" | "g10" | "g90" | "g100";
 
 const CARBON_THEMES: CarbonThemeName[] = ["white", "g10", "g90", "g100"];
 
-const withCarbonTheme: Decorator = (Story, context) => {
+const WithCarbonTheme: Decorator = (Story, context) => {
   const theme = (context.globals.theme as CarbonThemeName) ?? "white";
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const preview: Preview = {
     },
   },
 
-  decorators: [withCarbonTheme],
+  decorators: [WithCarbonTheme],
 
   parameters: {
     controls: {
