@@ -8,14 +8,15 @@ Keep the implementation focused, maintainable, accessible, and suitable for a te
 
 ## Existing architecture
 
-This repository uses Builder's full-stack Fusion starter:
+This repository is a client-only single-page application:
 
 - Frontend: React 18, React Router 6, TypeScript, and Vite
-- Backend: Express integrated with the Vite development server
-- Validation: Zod where runtime validation is appropriate
-- Testing: Vitest
+- Validation: Zod for validating external API responses
+- Testing: Vitest and React Testing Library
 - Package manager: pnpm
 - Development port: 8080
+
+There is no server. All data fetching (ZIP-to-coordinates lookup and weather forecasts) happens directly from the browser against public APIs.
 
 Use the dependency versions already declared in `package.json`. Do not upgrade frameworks or replace the existing architecture unless explicitly requested.
 
@@ -29,17 +30,12 @@ client/                   # React SPA
 ├── App.tsx               # Application routes and React entry point
 └── global.scss           # Global and design-system style entry point
 
-server/                   # Express server
-├── index.ts              # Server setup and route registration
-└── routes/               # Server-side API handlers
-
-shared/                   # Types shared between client and server
+storybook/                # Nested Storybook application documenting UI components
 ```
 
-Existing aliases:
+Existing alias:
 
 - `@/*` maps to `client/*`
-- `@shared/*` maps to `shared/*`
 
 Preserve this structure unless a change provides a clear architectural benefit.
 
@@ -54,22 +50,9 @@ Preserve this structure unless a change provides a clear architectural benefit.
 
 ## Server usage
 
-The starter includes an Express server, but do not create server endpoints unless server-side execution is genuinely necessary.
+This application does not have a server and should not gain one. All external calls (ZIP lookup, weather forecast) are made directly from the browser using public, keyless APIs.
 
-Appropriate reasons include:
-
-- Protecting private API keys or credentials
-- Performing operations that must not run in the browser
-- Encapsulating server-only business logic
-
-Server API endpoints must:
-
-- Live under `server/routes/`
-- Use the `/api/` prefix
-- Define shared request or response types in `shared/` when useful
-- Validate untrusted inputs at the server boundary
-
-Do not add an Express endpoint merely to proxy a public API that can be called safely from the browser.
+Do not introduce a server, serverless function, or API route unless a genuine need arises to protect a private credential or run logic that cannot execute in the browser. If that ever happens, explain the reasoning before adding the infrastructure.
 
 ## Package management
 
@@ -86,7 +69,6 @@ Do not add an Express endpoint merely to proxy a public API that can be called s
 - Do not recreate a component already available through Carbon.
 - Avoid hard-coded color, typography, and spacing values when an appropriate Carbon token exists.
 - Keep custom CSS limited to application-specific layout or behavior that Carbon does not provide.
-- Until Carbon is installed and indexed, do not introduce a new visual component library.
 
 ## Application organization
 
@@ -95,7 +77,6 @@ Do not add an Express endpoint merely to proxy a public API that can be called s
 - Put reusable utilities in `client/lib/`.
 - Keep API access, forecast transformation, and UI rendering separated.
 - Keep components small and focused.
-- Use shared types rather than duplicating compatible client/server types.
 - Keep external-service details out of presentation components.
 
 ## Testing requirements
@@ -114,18 +95,17 @@ Documentation-only and formatting-only changes do not require new tests.
 
 - Never commit real secrets.
 - Values exposed through `VITE_*` variables are public browser values and must not be treated as secrets.
-- Put private credentials behind the Express server if private credentials become necessary.
-- Document required environment variables in `.env.example`.
+- This application currently requires no environment variables. If one becomes necessary, document it in `.env.example`.
 
 ## Development commands
 
 ```bash
 pnpm install       # Install dependencies
-pnpm dev           # Start client and server on port 8080
+pnpm dev           # Start the client on port 8080
 pnpm test          # Run Vitest
 pnpm typecheck     # Run TypeScript validation
-pnpm build         # Create the production build
-pnpm start         # Run the production server
+pnpm build         # Create the production build (dist/spa)
+pnpm preview       # Preview the production build locally
 ```
 
 After behavioral changes, run at minimum:
@@ -133,7 +113,21 @@ After behavioral changes, run at minimum:
 1. `pnpm test`
 2. `pnpm typecheck`
 
-Run `pnpm build` after changes to routing, dependencies, configuration, server behavior, or deployment behavior.
+Run `pnpm build` after changes to routing, dependencies, configuration, or deployment behavior.
+
+## Nested Storybook application
+
+The `storybook/` directory is a separate, independently managed Storybook application used to document and test UI components in isolation. It has its own `package.json` and lockfile.
+
+```bash
+cd storybook
+pnpm install           # Install Storybook dependencies
+pnpm storybook         # Start Storybook dev server on port 6006
+pnpm test              # Run Storybook's Vitest project
+pnpm build-storybook   # Build the static Storybook site
+```
+
+Changes inside `storybook/` do not affect the root application's build or tests, and vice versa.
 
 ## Change quality
 
